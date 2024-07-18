@@ -30,19 +30,24 @@ const userSchema = new Schema({
 });
 
 // instance method
-userSchema.method.isStudent = function () {
+userSchema.methods.isStudent = function () {
   return this.role == "student";
 };
 // 分別用來檢查用戶的角色是 "student" 還是 "instructor"。
 // 這些方法被添加到 userSchema 中，這樣每個 User 模型的實例都可以使用這些方法來檢查其角色。
-userSchema.method.isInstructor = function () {
+userSchema.methods.isInstructor = function () {
   return this.role == "instructor";
 };
 
-userSchema.method.comparePassword = async function (password, cb) {
+userSchema.methods.comparePassword = async function (password, cb) {
   // password 是使用者登入時輸入的密碼。 this.password為資料庫儲存的經過雜湊處理的密碼
-  let result = await bcrypt.compare(password, this.password);
-  return cb(null, result);
+  let result;
+  try {
+    result = await bcrypt.compare(password, this.password);
+    return cb(null, result);
+  } catch (e) {
+    return cb(e, result);
+  }
 };
 
 // 在儲存新使用者 newUser.save() 之前要先做函數內部的事

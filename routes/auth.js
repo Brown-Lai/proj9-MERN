@@ -39,4 +39,34 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  // 確認數據是否符合規範
+  let { error } = loginValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  // 確認信箱是否被註冊過
+  const foundUser = await User.findOne({ email: req.body.email });
+  if (!foundUser) {
+    return res.status(401).send("無法找到使用者, 請確認信箱是否正確");
+  }
+
+  // 與資料庫比對密碼
+  foundUser.comparePassword(req.body.password, (err, isMatch) => {
+    if (err) return res.status(500).send(err);
+
+    if (isMatch) {
+      // 製作json web token
+      const tokenObject = { _id: foundUser._id, email: foundUser.email };
+      const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET);
+      return res.send({
+        message: "成功登入",
+        token: "JWT " + token,
+        user: foundUser,
+      });
+    } else {
+      return res.status(401).send("密碼錯誤");
+    }
+  });
+});
+
 module.exports = router;
