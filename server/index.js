@@ -8,6 +8,7 @@ const courseRoute = require("./routes").course;
 const passport = require("passport");
 // 這行代碼引入了位於 ./config/passport 路徑下的配置文件，並將 passport 變量作為參數傳遞給這個配置文件中的函數。
 require("./config/passport")(passport);
+const cors = require("cors");
 
 mongoose
   .connect("mongodb://localhost:27017/mernDB")
@@ -21,6 +22,7 @@ mongoose
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use("/api/user", authRoute);
 // course route 應該被jwt保護
