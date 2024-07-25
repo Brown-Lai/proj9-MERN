@@ -47,7 +47,7 @@ class CourseService {
     });
   }
 
-  //
+  // 用課程名稱尋找課程
   getCourseByName(name) {
     let token;
     if (localStorage.getItem("user")) {
@@ -61,6 +61,25 @@ class CourseService {
         Authorization: token,
       },
     });
+  }
+
+  enroll(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+
+    return axios.post(
+      API_URL + "/enroll/" + _id,
+      {},
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
   }
 }
 

@@ -26,6 +26,18 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
       });
   };
 
+  const handleEnroll = (e) => {
+    courseService
+      .enroll(e.target.id)
+      .then(() => {
+        window.alert("課程註冊成功，將重新導向到課程頁面");
+        navigate("/course");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   return (
     <div style={{ padding: "3rem" }}>
       {!currentUser && (
@@ -76,7 +88,12 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
                   <p style={{ margin: "0.5rem 0rem" }}>
                     講師: {course.instructor.username}
                   </p>
-                  <a href="#" className="card-tex btn btn-primary">
+                  <a
+                    href="#"
+                    id={course._id}
+                    className="card-tex btn btn-primary"
+                    onClick={handleEnroll}
+                  >
                     註冊課程
                   </a>
                 </div>

@@ -92,6 +92,19 @@ router.post("/", async (req, res) => {
   }
 });
 
+// 讓學生透過課程id註冊新的課程
+router.post("/enroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let course = await Course.findOne({ _id }).exec();
+    course.students.push(req.user._id);
+    await course.save();
+    return res.send("註冊完成");
+  } catch (e) {
+    return res.send(e);
+  }
+});
+
 // 編輯課程
 router.patch("/:_id", async (req, res) => {
   // 驗證數據符合規範
