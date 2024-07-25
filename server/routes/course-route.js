@@ -37,6 +37,19 @@ router.get("/student/:_student_id", async (req, res) => {
   return res.send(coursesFound);
 });
 
+// 用課程名稱尋找課程
+router.get("/findByName/:name", async (req, res) => {
+  let { name } = req.params;
+  try {
+    let courseFound = await Course.find({ title: name })
+      .populate("instructor", ["email", "username"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
 // 用課程id尋找課程
 router.get("/:_id", async (req, res) => {
   let { _id } = req.params;
